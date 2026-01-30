@@ -12,7 +12,6 @@
       supportedSystems = [
         "x86_64-linux" # 64-bit Intel/AMD Linux
         "aarch64-linux" # 64-bit ARM Linux
-        "aarch64-darwin" # 64-bit ARM macOS
       ];
 
       # Helper for providing system-specific attributes
@@ -45,11 +44,12 @@
           default = pkgs.mkShellNoCC {
             # The Nix packages provided in the environment
             packages = with pkgs; [
-              # Add the flake's formatter to your project's environment
-              self.formatter.${system}
-
-              # Other packages
-              ponysay
+              # flutter pkg is provided by mise
+              cmake
+              clang
+              ninja
+              glib.dev
+              gtk3.dev
             ];
 
             # Set any environment variables for your development environment
@@ -60,16 +60,5 @@
           };
         }
       );
-
-      # Nix formatter
-
-      # This applies the formatter that follows RFC 166, which defines a standard format:
-      # https://github.com/NixOS/rfcs/pull/166
-
-      # To format all Nix files:
-      # git ls-files -z '*.nix' | xargs -0 -r nix fmt
-      # To check formatting:
-      # git ls-files -z '*.nix' | xargs -0 -r nix develop --command nixfmt --check
-      formatter = forEachSupportedSystem ({ pkgs, ... }: pkgs.nixfmt-rfc-style);
     };
 }
